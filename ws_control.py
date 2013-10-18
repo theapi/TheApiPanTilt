@@ -95,8 +95,6 @@ class ServoPWM:
         elif command >self.minAnglePulseWidthPair[ 1 ]:
             command = self.minAnglePulseWidthPair[ 1 ]
 
-        print command
-
         self.setPulseWidth( command )
 
     #---------------------------------------------------------------------------
@@ -149,10 +147,19 @@ class ChatWebSocketHandler(WebSocket):
     def received_message(self, m):
         cherrypy.engine.publish('websocket-broadcast', m)
         # Process pixel data here...
+        command = str(m)
+        print "Command: " + command
+        vector = command.split(',')
+        panIncrement = int( vector[0].strip() )
+        tiltIncrement = int( vector[1].strip() )
+
+        #panServoPWM.movePulseIncrement( panIncrement )
+        #tiltServoPWM.movePulseIncrement( tiltIncrement )
 
         # Move camera...
-        panServoPWM.movePulseIncrement( 5 )
-        time.sleep( 0.05 )
+        panServoPWM.movePulseIncrement( panIncrement )
+        tiltServoPWM.movePulseIncrement( tiltIncrement )
+        time.sleep( 0.01 )
 
     def closed(self, code, reason="A client left the room without a proper explanation."):
         cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
