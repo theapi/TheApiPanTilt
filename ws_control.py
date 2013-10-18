@@ -25,6 +25,14 @@ TILT_PWM_PIN = 24
 ABSOLUTE_MIN_PULSE_WIDTH_US = 500
 ABSOLUTE_MAX_PULSE_WIDTH_US = 2500
 
+
+
+# Setup RPIO, and prepare for PWM signals
+RPIO.setmode( RPIO.BCM )
+
+RPIO.PWM.setup( pulse_incr_us=PWM_PULSE_INCREMENT_US )
+RPIO.PWM.init_channel( PWM_DMA_CHANNEL, PWM_SUBCYLCLE_TIME_US )
+
 #-------------------------------------------------------------------------------
 class ServoPWM:
 
@@ -126,6 +134,16 @@ class ServoPWM:
         # Now set the pulse width
         self.setPulseWidth( pulseWidth )
 
+#-------------------------------------------------------------------------------
+# Create ServoPWM instances to control the servos
+panServoPWM = ServoPWM( PAN_PWM_PIN,
+    minAnglePulseWidthPair=( 45.0, 1850 ),
+    midAnglePulseWidthPair=( 90.0, 1100 ),
+    maxAnglePulseWidthPair=( 180.0, 500.0 ) )
+tiltServoPWM = ServoPWM( TILT_PWM_PIN,
+    minAnglePulseWidthPair=( 45.0, 2100 ),
+    midAnglePulseWidthPair=( 90.0, 1700 ),
+    maxAnglePulseWidthPair=( 135.0, 1100.0 ) )
 
 class ChatWebSocketHandler(WebSocket):
     def received_message(self, m):
@@ -277,21 +295,6 @@ if __name__ == '__main__':
         }
     )
 
-    #-------------------------------------------------------------------------------
-    # Create ServoPWM instances to control the servos
-    panServoPWM = ServoPWM( PAN_PWM_PIN,
-        minAnglePulseWidthPair=( 45.0, 1850 ),
-        midAnglePulseWidthPair=( 90.0, 1100 ),
-        maxAnglePulseWidthPair=( 180.0, 500.0 ) )
-    tiltServoPWM = ServoPWM( TILT_PWM_PIN,
-        minAnglePulseWidthPair=( 45.0, 2100 ),
-        midAnglePulseWidthPair=( 90.0, 1700 ),
-        maxAnglePulseWidthPair=( 135.0, 1100.0 ) )
 
-    # Setup RPIO, and prepare for PWM signals
-    RPIO.setmode( RPIO.BCM )
-
-    RPIO.PWM.setup( pulse_incr_us=PWM_PULSE_INCREMENT_US )
-    RPIO.PWM.init_channel( PWM_DMA_CHANNEL, PWM_SUBCYLCLE_TIME_US )
 
 
