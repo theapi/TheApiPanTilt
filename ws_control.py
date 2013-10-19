@@ -135,13 +135,13 @@ class ServoPWM:
 #-------------------------------------------------------------------------------
 # Create ServoPWM instances to control the servos
 panServoPWM = ServoPWM( PAN_PWM_PIN,
-    minAnglePulseWidthPair=( 45.0, 1850 ),
-    midAnglePulseWidthPair=( 90.0, 1100 ),
-    maxAnglePulseWidthPair=( 180.0, 500.0 ) )
+    minAnglePulseWidthPair=( 50.0, 2100 ),
+    midAnglePulseWidthPair=( 90.0, 1300 ),
+    maxAnglePulseWidthPair=( 130.0, 800.0 ) )
 tiltServoPWM = ServoPWM( TILT_PWM_PIN,
     minAnglePulseWidthPair=( 45.0, 2100 ),
-    midAnglePulseWidthPair=( 90.0, 1700 ),
-    maxAnglePulseWidthPair=( 135.0, 1100.0 ) )
+    midAnglePulseWidthPair=( 90.0, 1800 ),
+    maxAnglePulseWidthPair=( 135.0, 900.0 ) )
 
 class ChatWebSocketHandler(WebSocket):
     def received_message(self, m):
@@ -153,13 +153,12 @@ class ChatWebSocketHandler(WebSocket):
         panIncrement = int( vector[0].strip() )
         tiltIncrement = int( vector[1].strip() )
 
-        #panServoPWM.movePulseIncrement( panIncrement )
-        #tiltServoPWM.movePulseIncrement( tiltIncrement )
+        #@todo if y is less than previous y, go down the difference etc...
 
         # Move camera...
         panServoPWM.movePulseIncrement( panIncrement )
         tiltServoPWM.movePulseIncrement( tiltIncrement )
-        time.sleep( 0.01 )
+        #time.sleep( 0.001 )
 
     def closed(self, code, reason="A client left the room without a proper explanation."):
         cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
