@@ -99,35 +99,38 @@ class ServoPWM:
         elif command >self.minAnglePulseWidthPair[ 1 ]:
             command = self.minAnglePulseWidthPair[ 1 ]
 
+        print 'setPulseWidth: ' + str(command)
         self.setPulseWidth( command )
 
     #---------------------------------------------------------------------------
     def joystickInput( self, px ):
 
+        # Do not map pixel to increment.
+        # Just whether movement required, and what speed.
+        # Joystick off center by small amount = small incremental move.
+        # Joystick off center by large amount = large incremental move.
+
+        step = 10
+
         pulseIncrement = 0
 
         if px > 0:
-            if px > self.lastJoystickInput:
-                # Still going in the same direction
-                pulseIncrement = px - self.lastJoystickInput
-            else:
-                # Now going in the reverse direction
-                pulseIncrement = (self.lastJoystickInput - px) * -1
+            pulseIncrement = step
+            if px > 50:
+                pulseIncrement = step * 3
 
         if px < 0:
-            if px < self.lastJoystickInput:
-                # Still going in the same direction
-                pulseIncrement = px - self.lastJoystickInput
-            else:
-                # Now going in the reverse direction
-                pulseIncrement = (self.lastJoystickInput - px) * -1
+            pulseIncrement = step * -1
+            if px < -50:
+                pulseIncrement = step * 3 * -1
 
-        #print str(pulseIncrement) + " -- " + str(self.lastPulseIncrement) + " -- " + str(self.lastJoystickInput)
-        print str(pulseIncrement)
-        self.lastJoystickInput = px
+        self.lastJoystickInput = pulseIncrement
+        #print str(pulseIncrement)
 
-        self.movePulseIncrement( pulseIncrement )
 
+    #---------------------------------------------------------------------------
+    def getLastJoystickInput( self ):
+        return self.lastJoystickInput;
 
     #---------------------------------------------------------------------------
     def setAngle( self, angle ):
@@ -175,19 +178,35 @@ tiltServoPWM = ServoPWM( TILT_PWM_PIN,
     midAnglePulseWidthPair=( 90.0, 1800 ),
     maxAnglePulseWidthPair=( 135.0, 900.0 ) )
 
+def positionCam():
+    x = panServoPWM.getLastJoystickInput()
+    print 'poscam x: ' + str(x)
+    #if x != 0:
+    panServoPWM.movePulseIncrement( x )
+
+
+    y = tiltServoPWM.getLastJoystickInput()
+    print 'poscam y: ' + str(y)
+    #if y != 0:
+    tiltServoPWM.movePulseIncrement( y )
+
 class ChatWebSocketHandler(WebSocket):
     def received_message(self, m):
         cherrypy.engine.publish('websocket-broadcast', m)
-        # Process pixel data here...
+        # Process pixel data
         command = str(m)
-        print "Command: " + command
+        print "WS: " + command
         vector = command.split(',')
-        panIncrement = int( vector[0].strip() )
-        tiltIncrement = int( vector[1].strip() )
+        x = int( vector[0].strip() )
+        y = int( vector[1].strip() )
 
-        # Move camera...
-        panServoPWM.joystickInput( panIncrement )
-        tiltServoPWM.joystickInput( tiltIncrement )
+        # Register the input
+        panServoPWM.joystickInput( x )
+        tiltServoPWM.joystickInput( y )
+
+
+        # TMP until I find a way to add a loop with the websocket...
+        positionCam()
         time.sleep( 0.001 )
 
     def closed(self, code, reason="A client left the room without a proper explanation."):
@@ -293,6 +312,8 @@ class Root(object):
     def ws(self):
         cherrypy.log("Handler created: %s" % repr(cherrypy.request.ws_handler))
 
+
+
 if __name__ == '__main__':
     import logging
     from ws4py import configure_logger
@@ -330,6 +351,7 @@ if __name__ == '__main__':
             }
         }
     )
+
 
 
 
