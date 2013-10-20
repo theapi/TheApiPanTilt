@@ -1,18 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# sudo apt-get install python-gevent
-
-from gevent import monkey; monkey.patch_all()
-
-import argparse
 import random
-import os
 
-import gevent
-import gevent.pywsgi
-
-from ws4py.server.geventserver import WebSocketWSGIApplication, \
-     WebSocketWSGIHandler, WSGIServer
+from ws4py.server.geventserver import WebSocketWSGIHandler, WSGIServer
+from ws4py.server.geventserver import WebSocketWSGIApplication
 from ws4py.websocket import EchoWebSocket
 
 class BroadcastWebSocket(EchoWebSocket):
@@ -37,6 +28,7 @@ class BroadcastWebSocket(EchoWebSocket):
                     client.send(reason)
                 except:
                     pass
+
 
 class EchoWebSocketApplication(object):
     def __init__(self, host, port):
@@ -139,14 +131,4 @@ class EchoWebSocketApplication(object):
                'host': self.host,
                'port': self.port}
 
-if __name__ == '__main__':
-    from ws4py import configure_logger
-    configure_logger()
 
-    parser = argparse.ArgumentParser(description='Echo gevent Server')
-    parser.add_argument('--host', default='127.0.0.1')
-    parser.add_argument('-p', '--port', default=9000, type=int)
-    args = parser.parse_args()
-
-    server = WSGIServer((args.host, args.port), EchoWebSocketApplication(args.host, args.port))
-    server.serve_forever()
