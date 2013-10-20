@@ -29,7 +29,7 @@ ABSOLUTE_MAX_PULSE_WIDTH_US = 2500
 
 # Setup RPIO, and prepare for PWM signals
 RPIO.setmode( RPIO.BCM )
-
+RPIO.PWM.set_loglevel(RPIO.PWM.LOG_LEVEL_ERRORS)
 RPIO.PWM.setup( pulse_incr_us=PWM_PULSE_INCREMENT_US )
 RPIO.PWM.init_channel( PWM_DMA_CHANNEL, PWM_SUBCYLCLE_TIME_US )
 
@@ -51,6 +51,8 @@ class ServoPWM:
         self.midAnglePulseWidthPair = midAnglePulseWidthPair
         self.maxAnglePulseWidthPair = maxAnglePulseWidthPair
         self.lastPulseWidthSet = None
+        self.lastPulseIncrement = 0
+        self.lastJoystickInput = 0
 
     #---------------------------------------------------------------------------
     def setCommand( self, command ):
@@ -84,6 +86,8 @@ class ServoPWM:
     #---------------------------------------------------------------------------
     def movePulseIncrement( self, pulseIncrement ):
 
+        self.lastPulseIncrement = pulseIncrement
+
         if self.lastPulseWidthSet is None:
             command = self.midAnglePulseWidthPair[ 1 ] + pulseIncrement
         else:
@@ -96,6 +100,34 @@ class ServoPWM:
             command = self.minAnglePulseWidthPair[ 1 ]
 
         self.setPulseWidth( command )
+
+    #---------------------------------------------------------------------------
+    def joystickInput( self, px ):
+
+        pulseIncrement = 0
+
+        if px > 0:
+            if px > self.lastJoystickInput:
+                # Still going in the same direction
+                pulseIncrement = px - self.lastJoystickInput
+            else:
+                # Now going in the reverse direction
+                pulseIncrement = (self.lastJoystickInput - px) * -1
+
+        if px < 0:
+            if px < self.lastJoystickInput:
+                # Still going in the same direction
+                pulseIncrement = px - self.lastJoystickInput
+            else:
+                # Now going in the reverse direction
+                pulseIncrement = (self.lastJoystickInput - px) * -1
+
+        #print str(pulseIncrement) + " -- " + str(self.lastPulseIncrement) + " -- " + str(self.lastJoystickInput)
+        print str(pulseIncrement)
+        self.lastJoystickInput = px
+
+        self.movePulseIncrement( pulseIncrement )
+
 
     #---------------------------------------------------------------------------
     def setAngle( self, angle ):
@@ -153,12 +185,10 @@ class ChatWebSocketHandler(WebSocket):
         panIncrement = int( vector[0].strip() )
         tiltIncrement = int( vector[1].strip() )
 
-        #@todo if y is less than previous y, go down the difference etc...
-
         # Move camera...
-        panServoPWM.movePulseIncrement( panIncrement )
-        tiltServoPWM.movePulseIncrement( tiltIncrement )
-        #time.sleep( 0.001 )
+        panServoPWM.joystickInput( panIncrement )
+        tiltServoPWM.joystickInput( tiltIncrement )
+        time.sleep( 0.001 )
 
     def closed(self, code, reason="A client left the room without a proper explanation."):
         cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
