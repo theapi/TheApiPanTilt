@@ -12,7 +12,7 @@ import gevent.pywsgi
 
 from ws4py.server.geventserver import WSGIServer
 
-from picam.echo import EchoWebSocketApplication
+from picam.joystick import EchoWebSocketApplication
 
 if __name__ == '__main__':
     #from ws4py import configure_logger
