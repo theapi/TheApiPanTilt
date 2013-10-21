@@ -4,9 +4,9 @@ import os
 
 from ws4py.server.geventserver import WebSocketWSGIHandler, WSGIServer
 from ws4py.server.geventserver import WebSocketWSGIApplication
-from ws4py.websocket import EchoWebSocket
+from picam.websocket import JoystickWebSocket
 
-class BroadcastWebSocket(EchoWebSocket):
+class BroadcastWebSocket(JoystickWebSocket):
     def opened(self):
         app = self.environ['ws4py.app']
         app.clients.append(self)
@@ -30,17 +30,13 @@ class BroadcastWebSocket(EchoWebSocket):
                     pass
 
 
-class EchoWebSocketApplication(object):
+class JoystickWebSocketApplication(object):
     def __init__(self, host, port):
         self.host = host
         self.port = port
         self.ws = WebSocketWSGIApplication(handler_cls=BroadcastWebSocket)
 
         self.staticDir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'static'))
-
-        #static_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'static'))
-        #f = open('/home/peterc/repos/picam/picam/static/js/virtualjoystick.js', 'r')
-        #print f.read()
 
         # keep track of connected websocket clients
         # so that we can brodcasts messages sent by one
