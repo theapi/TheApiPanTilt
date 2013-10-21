@@ -5,7 +5,8 @@ class ServoControl:
 
     def __init__(self, frequency, pulse_incr_us):
 
-        self.gpioMode = RPIO.BCM
+        #self.gpioMode = RPIO.BCM
+        self.gpioMode = 1
         self.channel = 0
         self.frequency = frequency
         self.pulse_incr_us = pulse_incr_us
@@ -58,13 +59,13 @@ class Servo:
         # Ensure that the pulse width is an integer multiple of the smallest
         # possible pulse increment
         #pulseIncrementUS = RPIO.PWM.get_pulse_incr_us()
-        pulseIncrementUS = PWM_PULSE_INCREMENT_US
+        pulseIncrementUS = 5
         numPulsesNeeded = int( pulseWidth/pulseIncrementUS )
         pulseWidth = numPulsesNeeded * pulseIncrementUS
 
         if pulseWidth != self.lastPulseWidthSet:
 
-            RPIO.PWM.add_channel_pulse( self.channel, self.pwmPin, 0, numPulsesNeeded )
+            #RPIO.PWM.add_channel_pulse( self.channel, self.pwmPin, 0, numPulsesNeeded )
             self.lastPulseWidthSet = pulseWidth
 
     #---------------------------------------------------------------------------
