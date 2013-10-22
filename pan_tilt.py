@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from gevent import monkey; monkey.patch_all()
+from gevent import monkey; monkey.patch_all(select=False)
 
-import math
+import argparse
 import time
 import gevent
 from ws4py.client.geventclient import WebSocketClient
 
-from picam.dummyservo import ServoControl, Servo
+from picam.servo import *
 
 PWM_FREQUENCY = 50    # Hz
 PWM_PULSE_INCREMENT_US = 5
@@ -16,6 +16,11 @@ TILT_PWM_PIN = 24
 
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description='Pan and Tilt')
+    parser.add_argument('--host', default='127.0.0.1')
+    parser.add_argument('-p', '--port', default=9001, type=int)
+    args = parser.parse_args()
 
     servoControl = ServoControl(PWM_FREQUENCY, PWM_PULSE_INCREMENT_US)
 
@@ -31,7 +36,7 @@ if __name__ == '__main__':
         maxAnglePulseWidthPair=( 135.0, 900.0 ) )
 
 
-    ws = WebSocketClient('ws://localhost:9001/ws', protocols=['http-only', 'chat'])
+    ws = WebSocketClient('ws://' + str(args.host) + ':' + str(args.port) + '/ws', protocols=['http-only', 'chat'])
     ws.connect()
 
     ws.send("Hello world")
@@ -57,7 +62,7 @@ if __name__ == '__main__':
 
     def joystick():
         while True:
-            time.sleep(0.1)
+            time.sleep(0.01)
             # Move if joystick is not centered
             #x = panServo.getLastJoystickInput()
             #y = tiltServo.getLastJoystickInput()
