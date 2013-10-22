@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import math
 
 class ServoControl:
 
@@ -19,8 +20,30 @@ class ServoControl:
         #RPIO.PWM.setup( pulse_incr_us = self.pulse_incr_us )
         #RPIO.PWM.init_channel( self.channel, self.subcycle_time_us )
 
-    def getServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
-        return Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair )
+        self.panServo = None
+        self.tiltServo = None
+
+    def getPanServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
+        self.panServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair )
+        return self.panServo
+
+    def getTiltServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
+        self.tiltServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair )
+        return self.tiltServo
+
+    def move(self):
+        x = self.panServo.getLastJoystickInput()
+        y = self.tiltServo.getLastJoystickInput()
+        #self.vector(x, y)
+
+    def vector(self, x, y):
+        print math.degrees(math.atan2(x, y))
+
+        #if (x != 0):
+           # self.panServo.movePulseIncrement( x )
+        #if (y != 0):
+            #self.tiltServo.movePulseIncrement( y )
+
 
 class Servo:
 

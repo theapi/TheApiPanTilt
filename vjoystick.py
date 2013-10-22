@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Joystick gevent Server')
     parser.add_argument('--host', default='127.0.0.1')
-    parser.add_argument('-p', '--port', default=9000, type=int)
+    parser.add_argument('-p', '--port', default=9001, type=int)
     args = parser.parse_args()
 
     server = WSGIServer((args.host, args.port), JoystickWebSocketApplication(args.host, args.port))
