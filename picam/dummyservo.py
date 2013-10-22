@@ -22,6 +22,8 @@ class ServoControl:
 
         self.panServo = None
         self.tiltServo = None
+        self.vectorX = 0
+        self.vectorY = 0
 
     def getPanServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
         self.panServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair )
@@ -32,17 +34,41 @@ class ServoControl:
         return self.tiltServo
 
     def move(self):
-        x = self.panServo.getLastJoystickInput()
-        y = self.tiltServo.getLastJoystickInput()
-        #self.vector(x, y)
+        incrementX = self.getPulseIncrement(self.vectorX)
+        incrementY = self.getPulseIncrement(self.vectorY)
+        if (incrementX != 0):
+            self.panServo.movePulseIncrement( incrementX )
+        if (incrementY != 0):
+            self.tiltServo.movePulseIncrement( incrementY )
 
-    def vector(self, x, y):
-        print math.degrees(math.atan2(x, y))
+    def getPulseIncrement(self, px):
+        # Do not map pixel to increment.
+        # Just whether movement required, and what speed.
+        # Joystick off center by small amount = small incremental move.
+        # Joystick off center by large amount = large incremental move.
 
-        #if (x != 0):
-           # self.panServo.movePulseIncrement( x )
-        #if (y != 0):
-            #self.tiltServo.movePulseIncrement( y )
+        step = 10
+        pulseIncrement = 0
+
+        if px > 0:
+            pulseIncrement = step
+            if px > 50:
+                pulseIncrement = step * 3
+
+        if px < 0:
+            pulseIncrement = step * -1
+            if px < -50:
+                pulseIncrement = step * 3 * -1
+
+        return pulseIncrement
+
+    def setVector(self, m):
+        vector = m.split(',')
+        self.vectorX = int( vector[0].strip() )
+        self.vectorY = int( vector[1].strip() )
+        print math.degrees(math.atan2(self.vectorX, self.vectorY))
+
+
 
 
 class Servo:
@@ -109,36 +135,6 @@ class Servo:
 
         print 'setPulseWidth: ' + str(command)
         self.setPulseWidth( command )
-
-    #---------------------------------------------------------------------------
-    def joystickInput( self, px ):
-
-        # Do not map pixel to increment.
-        # Just whether movement required, and what speed.
-        # Joystick off center by small amount = small incremental move.
-        # Joystick off center by large amount = large incremental move.
-
-        step = 10
-
-        pulseIncrement = 0
-
-        if px > 0:
-            pulseIncrement = step
-            if px > 50:
-                pulseIncrement = step * 3
-
-        if px < 0:
-            pulseIncrement = step * -1
-            if px < -50:
-                pulseIncrement = step * 3 * -1
-
-        self.lastJoystickInput = pulseIncrement
-        #print str(pulseIncrement)
-
-
-    #---------------------------------------------------------------------------
-    def getLastJoystickInput( self ):
-        return self.lastJoystickInput;
 
 
 

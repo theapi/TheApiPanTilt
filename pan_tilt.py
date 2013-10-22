@@ -45,19 +45,8 @@ if __name__ == '__main__':
             m = ws.receive()
             if m is not None:
                 m = str(m)
-                # Process pixel data
                 print "WS: " + m
-                vector = m.split(',')
-                x = int( vector[0].strip() )
-                y = int( vector[1].strip() )
-
-                print math.degrees(math.atan2(x, y))
-
-                # Register the input
-                panServo.joystickInput( x )
-                tiltServo.joystickInput( y )
-
-
+                servoControl.setVector(m)
 
                 if len(m) == 35:
                     ws.close()
@@ -73,7 +62,7 @@ if __name__ == '__main__':
             #x = panServo.getLastJoystickInput()
             #y = tiltServo.getLastJoystickInput()
 
-            #servoControl.move()
+            servoControl.move()
 
             #if (x != 0):
             #    panServo.movePulseIncrement( x )
