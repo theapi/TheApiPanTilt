@@ -47,6 +47,8 @@ class ServoControl:
         # Joystick off center by small amount = small incremental move.
         # Joystick off center by large amount = large incremental move.
 
+        return px
+
         step = 10
         pulseIncrement = 0
 
