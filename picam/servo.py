@@ -35,12 +35,17 @@ class ServoControl:
         return self.tiltServo
 
     def move(self):
-        incrementX = self.getPulseIncrement(self.vectorX)
-        incrementY = self.getPulseIncrement(self.vectorY)
-        if (incrementX != 0):
-            self.panServo.movePulseIncrement( incrementX )
-        if (incrementY != 0):
-            self.tiltServo.movePulseIncrement( incrementY )
+        # Allow some slack with up & down
+        # So you don't need to be exactly 0 to move in one axis.
+        if (self.vectorX < -5 or self.vectorX > 5):
+            incrementX = self.getPulseIncrement(self.vectorX)
+            if (incrementX != 0):
+                self.panServo.movePulseIncrement( incrementX )
+
+        if (self.vectorY < -5 or self.vectorY > 5):
+            incrementY = self.getPulseIncrement(self.vectorY)
+            if (incrementY != 0):
+                self.tiltServo.movePulseIncrement( incrementY )
 
     def getPulseIncrement(self, px):
         # Do not map pixel to increment.
@@ -48,19 +53,22 @@ class ServoControl:
         # Joystick off center by small amount = small incremental move.
         # Joystick off center by large amount = large incremental move.
 
-        #return px
         step = 5
         pulseIncrement = 0
 
         if px > 0:
             pulseIncrement = step
-            if px > 50:
-                pulseIncrement = step * 3
+            if px > 25:
+                pulseIncrement = step * 2
+                if px > 50:
+                    pulseIncrement = step * 10
 
         if px < 0:
             pulseIncrement = step * -1
-            if px < -50:
-                pulseIncrement = step * 3 * -1
+            if px < -25:
+                pulseIncrement = step * 2 * -1
+                if px < -50:
+                    pulseIncrement = step * 10 * -1
 
         return pulseIncrement
 
