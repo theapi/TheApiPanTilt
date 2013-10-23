@@ -47,9 +47,8 @@ class ServoControl:
         # Joystick off center by small amount = small incremental move.
         # Joystick off center by large amount = large incremental move.
 
-        return px
-
-        step = 10
+        #return px
+        step = 5
         pulseIncrement = 0
 
         if px > 0:
@@ -66,9 +65,13 @@ class ServoControl:
 
     def setVector(self, m):
         vector = m.split(',')
-        self.vectorX = int( vector[0].strip() )
-        self.vectorY = int( vector[1].strip() )
-        print math.degrees(math.atan2(self.vectorX, self.vectorY))
+        try:
+            self.vectorX = int( vector[0].strip() )
+            self.vectorY = int( vector[1].strip() )
+            print math.degrees(math.atan2(self.vectorX, self.vectorY))
+        except ValueError:
+            # not a vector
+            return
 
 
 
