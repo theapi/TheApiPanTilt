@@ -4,9 +4,9 @@ import os
 
 from ws4py.server.geventserver import WebSocketWSGIHandler, WSGIServer
 from ws4py.server.geventserver import WebSocketWSGIApplication
-from picam.websocket import JoystickWebSocket
+from ws4py.websocket import WebSocket
 
-class BroadcastWebSocket(JoystickWebSocket):
+class BroadcastWebSocket(WebSocket):
     def opened(self):
         app = self.environ['ws4py.app']
         app.clients.append(self)

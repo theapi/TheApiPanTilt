@@ -77,7 +77,7 @@ class ServoControl:
         try:
             self.vectorX = int( vector[0].strip() )
             self.vectorY = int( vector[1].strip() )
-            print math.degrees(math.atan2(self.vectorX, self.vectorY))
+            #print math.degrees(math.atan2(self.vectorX, self.vectorY))
         except ValueError:
             # not a vector
             return
@@ -146,7 +146,7 @@ class Servo:
         elif command >self.minAnglePulseWidthPair[ 1 ]:
             command = self.minAnglePulseWidthPair[ 1 ]
 
-        print 'setPulseWidth: ' + str(command)
+        #print 'setPulseWidth: ' + str(command)
         self.setPulseWidth( command )
 
 
