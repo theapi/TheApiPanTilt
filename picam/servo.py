@@ -25,6 +25,7 @@ class ServoControl:
         self.tiltServo = None
         self.vectorX = 0
         self.vectorY = 0
+        self.slack = 1
 
     def getPanServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
         self.panServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair )
@@ -37,12 +38,13 @@ class ServoControl:
     def move(self):
         # Allow some slack with up & down
         # So you don't need to be exactly 0 to move in one axis.
-        if (self.vectorX < -5 or self.vectorX > 5):
+
+        if ( (self.slack == 0) or (self.vectorX < -self.slack or self.vectorX > self.slack) ):
             incrementX = self.getPulseIncrement(self.vectorX)
             if (incrementX != 0):
                 self.panServo.movePulseIncrement( incrementX )
 
-        if (self.vectorY < -5 or self.vectorY > 5):
+        if ( (self.slack == 0) or (self.vectorY < -self.slack or self.vectorY > self.slack) ):
             incrementY = self.getPulseIncrement(self.vectorY)
             if (incrementY != 0):
                 self.tiltServo.movePulseIncrement( incrementY )
