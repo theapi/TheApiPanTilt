@@ -26,6 +26,8 @@ class ServoControl:
         self.vectorX = 0
         self.vectorY = 0
         self.slack = 1
+        self.invertPan = False
+        self.invertTilt = False
 
     def getPanServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
         self.panServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair )
@@ -34,6 +36,14 @@ class ServoControl:
     def getTiltServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
         self.tiltServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair )
         return self.tiltServo
+
+    def setInvertPan(self, b):
+        if (b):
+            self.invertPan = True
+
+    def setInvertTilt(self, b):
+        if (b):
+            self.invertTilt = True
 
     def move(self):
         # Allow some slack with up & down
@@ -79,6 +89,13 @@ class ServoControl:
         try:
             self.vectorX = int( vector[0].strip() )
             self.vectorY = int( vector[1].strip() )
+
+            if (self.invertPan):
+                self.vectorX = self.vectorX * -1
+
+            if (self.invertTilt):
+                self.vectorY = self.vectorY * -1
+
             #print math.degrees(math.atan2(self.vectorX, self.vectorY))
         except ValueError:
             # not a vector

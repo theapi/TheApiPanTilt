@@ -48,6 +48,14 @@ Then start the pan &amp; tilt controller
 ```
 sudo python pan_tilt.py --host=192.168.0.137
 ```
+To invert the pan use the -P flag
+```
+sudo python pan_tilt.py --host=192.168.0.137 -P
+```
+To invert the tilt use the -T flag
+```
+sudo python pan_tilt.py --host=192.168.0.137 -T
+```
 
 (Your host ip address may/will be different)
 

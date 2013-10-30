@@ -20,9 +20,21 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pan and Tilt')
     parser.add_argument('--host', default='127.0.0.1')
     parser.add_argument('-p', '--port', default=9001, type=int)
+    parser.add_argument("-P", "--invertpan", help="invert pan",
+                    action="store_true")
+    parser.add_argument("-T", "--inverttilt", help="invert tilt",
+                    action="store_true")
+
     args = parser.parse_args()
 
     servoControl = ServoControl(PWM_FREQUENCY, PWM_PULSE_INCREMENT_US)
+
+    if (args.invertpan):
+        servoControl.setInvertPan(args.invertpan)
+
+    if (args.inverttilt):
+        servoControl.setInvertTilt(args.inverttilt)
+
 
     # Create Servo instances to control the servos
     panServo = servoControl.getPanServo( PAN_PWM_PIN,
@@ -33,7 +45,7 @@ if __name__ == '__main__':
     tiltServo = servoControl.getTiltServo( TILT_PWM_PIN,
         minAnglePulseWidthPair=( 45.0, 2100 ),
         midAnglePulseWidthPair=( 90.0, 1800 ),
-        maxAnglePulseWidthPair=( 135.0, 900.0 ) )
+        maxAnglePulseWidthPair=( 130.0, 800.0 ) )
 
 
     ws = WebSocketClient('ws://' + str(args.host) + ':' + str(args.port) + '/ws', protocols=['http-only', 'chat'])
