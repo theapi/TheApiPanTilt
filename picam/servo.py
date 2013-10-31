@@ -165,7 +165,7 @@ class Servo:
         elif command >self.minAnglePulseWidthPair[ 1 ]:
             command = self.minAnglePulseWidthPair[ 1 ]
 
-        #print 'setPulseWidth: ' + str(command)
+        print 'setPulseWidth: ' + str(command)
         self.setPulseWidth( command )
 
 

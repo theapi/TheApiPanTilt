@@ -38,14 +38,14 @@ if __name__ == '__main__':
 
     # Create Servo instances to control the servos
     panServo = servoControl.getPanServo( PAN_PWM_PIN,
-        minAnglePulseWidthPair=( 50.0, 2100 ),
-        midAnglePulseWidthPair=( 90.0, 1300 ),
+        minAnglePulseWidthPair=( 50.0, 2350 ),
+        midAnglePulseWidthPair=( 90.0, 1500 ),
         maxAnglePulseWidthPair=( 130.0, 800.0 ) )
 
     tiltServo = servoControl.getTiltServo( TILT_PWM_PIN,
-        minAnglePulseWidthPair=( 45.0, 2100 ),
-        midAnglePulseWidthPair=( 90.0, 1800 ),
-        maxAnglePulseWidthPair=( 130.0, 800.0 ) )
+        minAnglePulseWidthPair=( 45.0, 1850 ),
+        midAnglePulseWidthPair=( 90.0, 1300 ),
+        maxAnglePulseWidthPair=( 130.0, 900.0 ) )
 
 
     ws = WebSocketClient('ws://' + str(args.host) + ':' + str(args.port) + '/ws', protocols=['http-only', 'chat'])
