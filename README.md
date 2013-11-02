@@ -22,6 +22,9 @@ Requirements
 pip install websocket-client
 ```
 
+The excellent [SimpleWebSocketServer](https://github.com/opiate/SimpleWebSocketServer)
+As this is just one file with no install, I've included in this repo.
+
 
 To Use
 ======
@@ -39,9 +42,6 @@ First start the websocket server:
 ```
 python ws_server.py --host=192.168.0.145
 ```
-
-From the excellent websocket server from https://github.com/opiate/SimpleWebSocketServer
-
 
 Then start the pan &amp; tilt controller
 ```
