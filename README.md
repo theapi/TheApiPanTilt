@@ -44,6 +44,12 @@ First start the websocket server:
 ```
 python websocket.py --host=192.168.0.137
 ```
+
+Much better websocket server from https://github.com/opiate/SimpleWebSocketServer
+```
+python SimpleExampleServer.py --example echo
+```
+
 Then start the pan &amp; tilt controller
 ```
 sudo python pan_tilt.py --host=192.168.0.137
