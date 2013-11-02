@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Pan and Tilt')
     parser.add_argument('--host', default='127.0.0.1')
-    parser.add_argument('-p', '--port', default=9001, type=int)
+    parser.add_argument('-p', '--port', default=8000, type=int)
     parser.add_argument("-P", "--invertpan", help="invert pan",
                     action="store_true")
     parser.add_argument("-T", "--inverttilt", help="invert tilt",
