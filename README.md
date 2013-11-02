@@ -17,58 +17,49 @@ The browser based joystick comes from
 
 Requirements
 ============
-[WebSocket-for-Python](https://github.com/Lawouach/WebSocket-for-Python)
+[websocket-client](https://github.com/liris/websocket-client)
 ```
-sudo easy_install ws4py
+pip install websocket-client
 ```
 
-[gevent](http://www.gevent.org/)
-```
-sudo apt-get install python-gevent
-```
 
 To Use
 ======
 
-There are two scripts:
- - websocket.py for the websocket server which also provides
-a virtual joystick for capable browsers.
- - pan_tilt.py which controls the servos. It is itself a websocket client.
+ - ws_server.py for the websocket server.
+ - joystick.html a joystick websocket client for a browser  
+ - main.py which controls the servos. It is a websocket client.
 
-websocket.py can be run on a seperate pi (server) than pan_tilt.py since
-pan_tilt.py connects via websockets to get its requested vectors.
-This also means that pan_tilt.py, which is run as root, is seperated
+ws_server.py can be run on a seperate pi (server) than main.py since
+main.py connects via websockets to get its requested vectors.
+This also means that main.py, which is run as root, is seperated
 from the evils that lurk on the internet.
 
 First start the websocket server:
 ```
-python websocket.py --host=192.168.0.137
+python ws_server.py --host=192.168.0.145
 ```
 
-Much better websocket server from https://github.com/opiate/SimpleWebSocketServer
-```
-python SimpleExampleServer.py --example echo
-```
+From the excellent websocket server from https://github.com/opiate/SimpleWebSocketServer
+
 
 Then start the pan &amp; tilt controller
 ```
-sudo python pan_tilt.py --host=192.168.0.137
+sudo python main.py --host=192.168.0.145
 ```
 To invert the pan use the -P flag
 ```
-sudo python pan_tilt.py --host=192.168.0.137 -P
+sudo python main.py --host=192.168.0.145 -P
 ```
 To invert the tilt use the -T flag
 ```
-sudo python pan_tilt.py --host=192.168.0.137 -T
+sudo python main.py --host=192.168.0.145 -T
 ```
 
 (Your host ip address may/will be different)
 
-Then point a browser, preferably via a touch screen, to
-```
-192.168.0.137:9001
-```
+Then open joystick.html in a browser, preferably via a touch screen.
+
 Touch the screen, and you finger will create a virtual joystick.
 Slight movements are all that are required.
 The greater the distance the joystick is from where you first touched,
