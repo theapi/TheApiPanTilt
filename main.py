@@ -48,17 +48,9 @@ if __name__ == "__main__":
         servoControl.setInvertTilt(args.inverttilt)
 
 
-    # Create Servo instances to control the servos
-    panServo = servoControl.getPanServo( PAN_PWM_PIN,
-        minAnglePulseWidthPair=( 50.0, 2350 ),
-        midAnglePulseWidthPair=( 90.0, 1500 ),
-        maxAnglePulseWidthPair=( 130.0, 800.0 ) )
-
-    tiltServo = servoControl.getTiltServo( TILT_PWM_PIN,
-        minAnglePulseWidthPair=( 45.0, 1850 ),
-        midAnglePulseWidthPair=( 90.0, 1300 ),
-        maxAnglePulseWidthPair=( 130.0, 900.0 ) )
-
+    # Initialise the pan & tilt mechanisms
+    servoControl.initPanServo( PAN_PWM_PIN, 800, 1500, 2350)
+    servoControl.initTiltServo( TILT_PWM_PIN, 900, 1300, 1850)
 
     ws = websocket.WebSocketApp('ws://' + str(args.host) + ':' + str(args.port) + '/ws',
                             on_message = on_message,
