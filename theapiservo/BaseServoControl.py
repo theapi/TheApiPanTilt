@@ -1,11 +1,10 @@
 #!/usr/bin/python
 
-from theapiservo.BaseServo import BaseServo as Servo
 
 class BaseServoControl:
 
-    def __init__(self, frequency, pulse_incr_us):
-
+    def __init__(self, servoclass, frequency, pulse_incr_us):
+        self.Servo = servoclass
         self.channel = 0
         self.frequency = frequency
         self.pulse_incr_us = pulse_incr_us
@@ -21,11 +20,11 @@ class BaseServoControl:
         self.invertTilt = False
 
     def getPanServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
-        self.panServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair, self.pulse_incr_us )
+        self.panServo = self.Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair, self.pulse_incr_us )
         return self.panServo
 
     def getTiltServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
-        self.tiltServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair, self.pulse_incr_us )
+        self.tiltServo = self.Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair, self.pulse_incr_us )
         return self.tiltServo
 
     def setInvertPan(self, b):

@@ -10,7 +10,7 @@ class RPIOServoControl(BaseServoControl):
 
     def __init__(self, frequency, pulse_incr_us):
 
-        BaseServoControl.__init__(self, frequency, pulse_incr_us)
+        BaseServoControl.__init__(self, Servo, frequency, pulse_incr_us)
 
         self.gpioMode = RPIO.BCM
 
