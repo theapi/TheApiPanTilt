@@ -7,9 +7,9 @@ import imp
 
 try:
     imp.find_module('RPIO')
-    from theapiservo.rpiocontrol import RPIOServoControl as ServoControl
+    from theapipantilt.drivers.rpiodriver import RPIOServoControl as ServoControl
 except ImportError:
-    from theapiservo.dummy import DummyServoControl as ServoControl
+    from theapipantilt.drivers.dummydriver import DummyServoControl as ServoControl
 
 
 

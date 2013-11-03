@@ -3,7 +3,7 @@
 import RPIO
 import RPIO.PWM
 
-from theapiservo.base import *
+from theapipantilt.drivers.base import *
 
 class RPIOServoControl(BaseServoControl):
 

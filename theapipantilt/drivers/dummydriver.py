@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 
-from theapiservo.base import *
+from theapipantilt.drivers.base import *
 
 class DummyServoControl(BaseServoControl):
 
