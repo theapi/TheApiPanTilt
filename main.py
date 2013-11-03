@@ -4,7 +4,7 @@ import websocket
 import thread
 import time
 
-from picam.servo import *
+from theapiservo.RPIOServoControl import RPIOServoControl as ServoControl
 
 PWM_FREQUENCY = 50    # Hz
 PWM_PULSE_INCREMENT_US = 5
