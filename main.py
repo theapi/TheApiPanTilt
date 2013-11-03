@@ -3,8 +3,15 @@ import argparse
 import websocket
 import thread
 import time
+import imp
 
-from theapiservo.RPIOServoControl import RPIOServoControl as ServoControl
+try:
+    imp.find_module('RPIO')
+    from theapiservo.RPIOServoControl import RPIOServoControl as ServoControl
+except ImportError:
+    from theapiservo.DummyServoControl import DummyServoControl as ServoControl
+
+
 
 PWM_FREQUENCY = 50    # Hz
 PWM_PULSE_INCREMENT_US = 5
