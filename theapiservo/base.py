@@ -1,25 +1,15 @@
 #!/usr/bin/python
 
-import RPIO
-import RPIO.PWM
-import math
 
-class ServoControl:
+class BaseServoControl:
 
-    def __init__(self, frequency, pulse_incr_us):
-
-        self.gpioMode = RPIO.BCM
+    def __init__(self, servoclass, frequency, pulse_incr_us):
+        self.Servo = servoclass
         self.channel = 0
         self.frequency = frequency
         self.pulse_incr_us = pulse_incr_us
 
         self.subcycle_time_us = 1000/frequency * 1000
-
-        # Setup RPIO, and prepare for PWM signals
-        RPIO.setmode( self.gpioMode )
-        RPIO.PWM.set_loglevel(RPIO.PWM.LOG_LEVEL_ERRORS)
-        RPIO.PWM.setup( pulse_incr_us = self.pulse_incr_us )
-        RPIO.PWM.init_channel( self.channel, self.subcycle_time_us )
 
         self.panServo = None
         self.tiltServo = None
@@ -30,11 +20,11 @@ class ServoControl:
         self.invertTilt = False
 
     def getPanServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
-        self.panServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair )
+        self.panServo = self.Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair, self.pulse_incr_us )
         return self.panServo
 
     def getTiltServo(self, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair):
-        self.tiltServo = Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair )
+        self.tiltServo = self.Servo( self.channel, pin, minAnglePulseWidthPair, midAnglePulseWidthPair, maxAnglePulseWidthPair, self.pulse_incr_us )
         return self.tiltServo
 
     def setInvertPan(self, b):
@@ -103,12 +93,10 @@ class ServoControl:
 
 
 
+class BaseServo:
 
-class Servo:
-
-    #---------------------------------------------------------------------------
     def __init__( self, channel, pwmPin, minAnglePulseWidthPair,
-        midAnglePulseWidthPair, maxAnglePulseWidthPair ):
+        midAnglePulseWidthPair, maxAnglePulseWidthPair, pulsIncrUs ):
 
         # Check that the given angles are valid
         assert( minAnglePulseWidthPair[ 0 ] >= 0 )
@@ -121,6 +109,7 @@ class Servo:
         self.minAnglePulseWidthPair = minAnglePulseWidthPair
         self.midAnglePulseWidthPair = midAnglePulseWidthPair
         self.maxAnglePulseWidthPair = maxAnglePulseWidthPair
+        self.pulsIncrUs = pulsIncrUs
 
         self.absoluteMinPulseWidthUs = 500 #todo setter
         self.absoluteMaxPulseWidthUs = 2500 #todo setter
@@ -129,7 +118,9 @@ class Servo:
         self.lastPulseIncrement = 0
         self.lastJoystickInput = 0
 
-    #---------------------------------------------------------------------------
+    def getPulseIncrementUS( self ):
+        return self.pulsIncrUs
+
     def setPulseWidth( self, pulseWidth ):
 
         # Constrain the pulse width
@@ -140,16 +131,18 @@ class Servo:
 
         # Ensure that the pulse width is an integer multiple of the smallest
         # possible pulse increment
-        pulseIncrementUS = RPIO.PWM.get_pulse_incr_us()
+        pulseIncrementUS = self.getPulseIncrementUS()
         numPulsesNeeded = int( pulseWidth/pulseIncrementUS )
         pulseWidth = numPulsesNeeded * pulseIncrementUS
 
         if pulseWidth != self.lastPulseWidthSet:
-
-            RPIO.PWM.add_channel_pulse( self.channel, self.pwmPin, 0, numPulsesNeeded )
+            self.addChannelPulse( self.channel, self.pwmPin, 0, numPulsesNeeded )
             self.lastPulseWidthSet = pulseWidth
 
-    #---------------------------------------------------------------------------
+    def addChannelPulse(self, dma_channel, gpio, start, width):
+        #RPIO.PWM.add_channel_pulse( dma_channel, gpio, start, width )
+        pass
+
     def movePulseIncrement( self, pulseIncrement ):
 
         self.lastPulseIncrement = pulseIncrement
@@ -167,6 +160,4 @@ class Servo:
 
         print 'setPulseWidth: ' + str(command)
         self.setPulseWidth( command )
-
-
 
