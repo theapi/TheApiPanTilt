@@ -101,7 +101,7 @@ class Simulation:
         self.faces  = [(0,1,2,3),(1,5,6,2),(5,4,7,6),(4,0,3,7),(0,4,5,1),(3,2,6,7)]
 
         # Define colors for each face
-        self.colors = [(255,0,255),(255,0,0),(0,255,0),(0,0,255),(0,255,255),(255,255,0)]
+        self.colors = [(255,255,255),(40,0,0),(0,40,0),(0,0,40),(0,40,40),(40,40,0)]
 
         self.angle = 0
 
@@ -115,7 +115,7 @@ class Simulation:
         self.tiltAngle += angle
 
     def move(self):
-        self.screen.fill((0,32,0))
+        self.screen.fill((13,20,26))
 
         # It will hold transformed vertices.
         t = []
