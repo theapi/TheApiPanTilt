@@ -130,19 +130,19 @@ class Simulation:
 
             self.clock.tick(50)
 
-            command = raw_input( ": " )
-            command = command.strip().lower()
-            if len( command ) > 0:
-                commandLetter = command[ 0 ]
-                if commandLetter == "p":
-                    commandData = int( command[ 1: ] )
-                    self.panAngle = int (commandData)
-                    self.move()
-
-                if commandLetter == "t":
-                    commandData = int( command[ 1: ] )
-                    self.tiltAngle = int (commandData)
-                    self.move()
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP]:
+                self.tiltAngle += 1
+                self.move()
+            if keys[pygame.K_DOWN]:
+                self.tiltAngle += -1
+                self.move()
+            if keys[pygame.K_LEFT]:
+                self.panAngle += 1
+                self.move()
+            if keys[pygame.K_RIGHT]:
+                self.move()
+                self.panAngle += -1
 
 
 if __name__ == "__main__":
