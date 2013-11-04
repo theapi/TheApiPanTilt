@@ -7,6 +7,47 @@
 import sys, math, pygame
 from operator import itemgetter
 
+from theapipantilt.drivers.base import *
+
+class CubeServoControl(BaseServoControl):
+
+    def __init__(self, frequency, pulse_incr_us):
+        BaseServoControl.__init__(self, CubeServo, frequency, pulse_incr_us)
+        self.pulse_incr_us = 1
+        self.step = 1
+
+        self.simulation = Simulation()
+        self.simulation.run()
+
+    def move(self):
+        #BaseServoControl.move(self)
+        #print self.panServo.lastPulseIncrement
+
+        doMove = False
+
+        incrementX = self.getPulseIncrement(self.vectorX)
+        if (incrementX != 0):
+            if (self.panServo.movePulseIncrement( incrementX )):
+                self.simulation.incrementPanAngle(self.panServo.lastPulseIncrement)
+                doMove = True
+
+        incrementY = self.getPulseIncrement(self.vectorY)
+        if (incrementY != 0):
+            if (self.tiltServo.movePulseIncrement( incrementY )):
+                self.simulation.incrementTiltAngle(self.tiltServo.lastPulseIncrement)
+                doMove = True
+
+        if (doMove):
+            self.simulation.move()
+
+
+
+class CubeServo(BaseServo):
+
+    def addChannelPulse(self, dma_channel, gpio, start, width):
+        pass
+
+
 class Point3D:
     def __init__(self, x = 0, y = 0, z = 0):
         self.x, self.y, self.z = float(x), float(y), float(z)
@@ -50,7 +91,7 @@ class Simulation:
         pygame.init()
 
         self.screen = pygame.display.set_mode((win_width, win_height))
-        pygame.display.set_caption("Simulation of the pan and tilt")
+        pygame.display.set_caption("Pan & Tilt")
 
         self.clock = pygame.time.Clock()
 
@@ -76,6 +117,12 @@ class Simulation:
 
         self.panAngle = 0
         self.tiltAngle = 0
+
+    def incrementPanAngle(self, angle):
+        self.panAngle += angle
+
+    def incrementTiltAngle(self, angle):
+        self.tiltAngle += angle
 
     def move(self):
         self.screen.fill((0,32,0))
@@ -118,31 +165,9 @@ class Simulation:
         pygame.display.flip()
 
     def run(self):
-
         self.move()
 
-        """ Main Loop """
-        while 1:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
 
-            self.clock.tick(50)
-
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_UP]:
-                self.tiltAngle += 1
-                self.move()
-            if keys[pygame.K_DOWN]:
-                self.tiltAngle += -1
-                self.move()
-            if keys[pygame.K_LEFT]:
-                self.panAngle += 1
-                self.move()
-            if keys[pygame.K_RIGHT]:
-                self.move()
-                self.panAngle += -1
 
 
 if __name__ == "__main__":

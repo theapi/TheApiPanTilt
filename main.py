@@ -9,7 +9,8 @@ try:
     imp.find_module('RPIO')
     from theapipantilt.drivers.rpiodriver import RPIOServoControl as ServoControl
 except ImportError:
-    from theapipantilt.drivers.dummydriver import DummyServoControl as ServoControl
+    #from theapipantilt.drivers.dummydriver import DummyServoControl as ServoControl
+    from theapipantilt.drivers.cube import CubeServoControl as ServoControl
 
 
 
@@ -49,8 +50,10 @@ if __name__ == "__main__":
 
 
     # Initialise the pan & tilt mechanisms
-    servoControl.initPanServo( PAN_PWM_PIN, 800, 1500, 2350)
-    servoControl.initTiltServo( TILT_PWM_PIN, 900, 1300, 1850)
+    #servoControl.initPanServo( PAN_PWM_PIN, 800, 1500, 2350)
+    #servoControl.initTiltServo( TILT_PWM_PIN, 900, 1300, 1850)
+    servoControl.initPanServo( PAN_PWM_PIN, -60, 0, 60)
+    servoControl.initTiltServo( TILT_PWM_PIN, -60, 0, 60)
 
     ws = websocket.WebSocketApp('ws://' + str(args.host) + ':' + str(args.port) + '/ws',
                             on_message = on_message,

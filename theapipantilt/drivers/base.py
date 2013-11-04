@@ -18,6 +18,7 @@ class BaseServoControl:
         self.slack = 1
         self.invertPan = False
         self.invertTilt = False
+        self.step = 5
 
     def initPanServo(self, pin, minWidth, midWidth, maxWidth):
         self.panServo = self.Servo( self.channel, pin, minWidth, midWidth, maxWidth, self.pulse_incr_us )
@@ -53,22 +54,21 @@ class BaseServoControl:
         # Joystick off center by small amount = small incremental move.
         # Joystick off center by large amount = large incremental move.
 
-        step = 5
         pulseIncrement = 0
 
         if px > 0:
-            pulseIncrement = step
+            pulseIncrement = self.step
             if px > 25:
-                pulseIncrement = step * 2
+                pulseIncrement = self.step * 2
                 if px > 50:
-                    pulseIncrement = step * 10
+                    pulseIncrement = self.step * 10
 
         if px < 0:
-            pulseIncrement = step * -1
+            pulseIncrement = self.step * -1
             if px < -25:
-                pulseIncrement = step * 2 * -1
+                pulseIncrement = self.step * 2 * -1
                 if px < -50:
-                    pulseIncrement = step * 10 * -1
+                    pulseIncrement = self.step * 10 * -1
 
         return pulseIncrement
 
@@ -135,6 +135,9 @@ class BaseServo:
             self.addChannelPulse( self.channel, self.pwmPin, 0, numPulsesNeeded )
             self.lastPulseWidthSet = pulseWidth
             print 'pin: ' + str(self.pwmPin) + ' -> ' + str(pulseWidth)
+            return True
+
+        return False
 
     def addChannelPulse(self, dma_channel, gpio, start, width):
         #RPIO.PWM.add_channel_pulse( dma_channel, gpio, start, width )
@@ -143,6 +146,6 @@ class BaseServo:
     def movePulseIncrement( self, pulseIncrement ):
         self.lastPulseIncrement = pulseIncrement
         command = self.lastPulseWidthSet + pulseIncrement
-        self.setPulseWidth( command )
+        return self.setPulseWidth( command )
 
 
