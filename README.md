@@ -30,7 +30,7 @@ To Use
 ======
 
  - ws_server.py for the websocket server.
- - joystick.html a joystick websocket client for a browser  
+ - joystick.html a joystick websocket client for a browser
  - main.py which controls the servos. It is a websocket client.
 
 ws_server.py can be run on a seperate pi (server) than main.py since
@@ -54,6 +54,13 @@ sudo python main.py --host=192.168.0.145 -P
 To invert the tilt use the -T flag
 ```
 sudo python main.py --host=192.168.0.145 -T
+```
+
+A virtual pan & tilt is availble if pygame is installed.
+(sudo apt-get install python-pygame)
+Choose the "cube" driver with the -d (--driver) option
+```
+sudo python main.py --host=192.168.0.145 -T -P --driver=cube
 ```
 
 (Your host ip address may/will be different)

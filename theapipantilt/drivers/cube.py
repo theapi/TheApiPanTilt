@@ -12,7 +12,7 @@ from theapipantilt.drivers.base import *
 class CubeServoControl(BaseServoControl):
 
     def __init__(self, frequency, pulse_incr_us):
-        BaseServoControl.__init__(self, CubeServo, frequency, pulse_incr_us)
+        BaseServoControl.__init__(self, BaseServo, frequency, pulse_incr_us)
         self.pulse_incr_us = 1
         self.step = 1
 
@@ -20,9 +20,6 @@ class CubeServoControl(BaseServoControl):
         self.simulation.run()
 
     def move(self):
-        #BaseServoControl.move(self)
-        #print self.panServo.lastPulseIncrement
-
         doMove = False
 
         incrementX = self.getPulseIncrement(self.vectorX)
@@ -39,13 +36,6 @@ class CubeServoControl(BaseServoControl):
 
         if (doMove):
             self.simulation.move()
-
-
-
-class CubeServo(BaseServo):
-
-    def addChannelPulse(self, dma_channel, gpio, start, width):
-        pass
 
 
 class Point3D:

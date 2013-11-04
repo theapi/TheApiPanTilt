@@ -3,15 +3,8 @@ import argparse
 import websocket
 import thread
 import time
-import imp
 
-try:
-    imp.find_module('RPIO')
-    from theapipantilt.drivers.rpiodriver import RPIOServoControl as ServoControl
-except ImportError:
-    #from theapipantilt.drivers.dummydriver import DummyServoControl as ServoControl
-    from theapipantilt.drivers.cube import CubeServoControl as ServoControl
-
+import theapipantilt.drivers as drivers
 
 
 PWM_FREQUENCY = 50    # Hz
@@ -32,6 +25,7 @@ def on_close(ws):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Pan and Tilt')
     parser.add_argument('--host', default='192.168.0.145')
+    parser.add_argument('-d', '--driver', default='rpiodriver')
     parser.add_argument('-p', '--port', default=8000, type=int)
     parser.add_argument("-P", "--invertpan", help="invert pan",
                     action="store_true")
@@ -40,7 +34,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    servoControl = ServoControl(PWM_FREQUENCY, PWM_PULSE_INCREMENT_US)
+    servoControl= drivers.Drivers().getDriver(args, PWM_FREQUENCY, PWM_PULSE_INCREMENT_US)
 
     if (args.invertpan):
         servoControl.setInvertPan(args.invertpan)
@@ -50,10 +44,14 @@ if __name__ == "__main__":
 
 
     # Initialise the pan & tilt mechanisms
-    #servoControl.initPanServo( PAN_PWM_PIN, 800, 1500, 2350)
-    #servoControl.initTiltServo( TILT_PWM_PIN, 900, 1300, 1850)
-    servoControl.initPanServo( PAN_PWM_PIN, -60, 0, 60)
-    servoControl.initTiltServo( TILT_PWM_PIN, -60, 0, 60)
+    # todo configuration for pulse widths (& angles)
+    if ('cube' == args.driver):
+        servoControl.initPanServo( PAN_PWM_PIN, -60, 0, 60)
+        servoControl.initTiltServo( TILT_PWM_PIN, -45, 0, 45)
+    else:
+        servoControl.initPanServo( PAN_PWM_PIN, 800, 1500, 2350)
+        servoControl.initTiltServo( TILT_PWM_PIN, 900, 1300, 1850)
+
 
     ws = websocket.WebSocketApp('ws://' + str(args.host) + ':' + str(args.port) + '/ws',
                             on_message = on_message,
