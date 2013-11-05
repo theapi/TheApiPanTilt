@@ -19,7 +19,7 @@ Requirements
 ============
 [websocket-client](https://github.com/liris/websocket-client)
 ```
-pip install websocket-client
+sudo pip install websocket-client
 ```
 
 The excellent [SimpleWebSocketServer](https://github.com/opiate/SimpleWebSocketServer)
