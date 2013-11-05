@@ -62,7 +62,7 @@ if __name__ == "__main__":
     thread.start_new_thread( ws.run_forever, ())
 
     while 1:
-        time.sleep(0.01)
+        time.sleep(0.05)
         servoControl.move()
         pass
 
