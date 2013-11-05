@@ -111,6 +111,8 @@ class BaseServo:
         self.lastPulseIncrement = 0
         self.lastJoystickInput = 0
 
+        self.currentPosition = 0
+
         # Center the servo
         self.setPulseWidth( self.midPulseWidth )
 

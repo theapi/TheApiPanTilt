@@ -12,7 +12,7 @@ from theapipantilt.drivers.base import *
 class CubeServoControl(BaseServoControl):
 
     def __init__(self, frequency, pulse_incr_us):
-        BaseServoControl.__init__(self, BaseServo, frequency, pulse_incr_us)
+        BaseServoControl.__init__(self, CubeServo, frequency, pulse_incr_us)
         self.pulse_incr_us = 1
         self.step = 1
 
@@ -20,22 +20,47 @@ class CubeServoControl(BaseServoControl):
         self.simulation.run()
 
     def move(self):
+
         doMove = False
 
-        incrementX = self.getPulseIncrement(self.vectorX)
-        if (incrementX != 0):
-            if (self.panServo.movePulseIncrement( incrementX )):
-                self.simulation.incrementPanAngle(self.panServo.lastPulseIncrement)
-                doMove = True
+        amount = self.panServo.move(self.vectorX )
+        if (amount != 0):
+            #print 'amount:' + str( amount)
+            self.simulation.incrementPanAngle(amount)
+            doMove = True
 
-        incrementY = self.getPulseIncrement(self.vectorY)
-        if (incrementY != 0):
-            if (self.tiltServo.movePulseIncrement( incrementY )):
-                self.simulation.incrementTiltAngle(self.tiltServo.lastPulseIncrement)
-                doMove = True
+        amount = self.tiltServo.move(self.vectorY )
+        if (amount != 0):
+            #print 'amount:' + str( amount)
+            self.simulation.incrementTiltAngle(amount)
+            doMove = True
+
 
         if (doMove):
             self.simulation.move()
+
+
+class CubeServo(BaseServo):
+
+    def addChannelPulse(self, dma_channel, gpio, start, width):
+        pass
+
+    def move(self, destination):
+
+        # Constrain the position
+        if destination < self.minPulseWidth:
+            destination = self.minPulseWidth
+        if destination > self.maxPulseWidth:
+            destination = self.maxPulseWidth
+
+        diff = destination - self.currentPosition
+
+        if (diff != 0):
+            # Jump straight there.
+            self.currentPosition = destination
+
+        return diff
+
 
 
 class Point3D:
