@@ -41,6 +41,7 @@ class BaseServoControl:
 
     def setVector(self, m):
         vector = m.split(',')
+        #print m
         try:
             self.vectorX = int( vector[0].strip() )
             self.vectorY = int( vector[1].strip() )
@@ -118,19 +119,11 @@ class BaseServo:
         return self.setPulseWidth( command )
 
     def move(self, destination):
-        # Constrain the position
-        if destination < self.minPulseWidth:
-            destination = self.minPulseWidth
-        if destination > self.maxPulseWidth:
-            destination = self.maxPulseWidth
-
-        diff = destination - self.currentPosition
-
-        if (diff != 0):
-            # Jump straight there.
-            self.currentPosition = destination
-            self.movePulseIncrement(diff)
-
-        return diff
-
+         # Jump straight there.
+         self.currentPosition = destination
+         #self.movePulseIncrement(destination)
+         command = self.midPulseWidth + (destination * 5)
+         self.setPulseWidth(command)
+         
+         return destination
 
