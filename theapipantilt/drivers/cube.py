@@ -23,13 +23,13 @@ class CubeServoControl(BaseServoControl):
 
         doMove = False
 
-        amount = self.panServo.move(self.vectorX )
+        amount = self.panServo.move(self.vectorX)
         if (amount != 0):
             #print 'amount:' + str( amount)
             self.simulation.incrementPanAngle(amount)
             doMove = True
 
-        amount = self.tiltServo.move(self.vectorY )
+        amount = self.tiltServo.move(self.vectorY)
         if (amount != 0):
             #print 'amount:' + str( amount)
             self.simulation.incrementTiltAngle(amount)

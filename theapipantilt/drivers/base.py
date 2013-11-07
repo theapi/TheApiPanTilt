@@ -35,42 +35,9 @@ class BaseServoControl:
             self.invertTilt = True
 
     def move(self):
-        # Allow some slack with up & down
-        # So you don't need to be exactly 0 to move in one axis.
+        self.panServo.move(self.vectorX)
+        self.tiltServo.move(self.vectorY)
 
-        if ( (self.slack == 0) or (self.vectorX < -self.slack or self.vectorX > self.slack) ):
-            incrementX = self.getPulseIncrement(self.vectorX)
-            if (incrementX != 0):
-                self.panServo.movePulseIncrement( incrementX )
-
-        if ( (self.slack == 0) or (self.vectorY < -self.slack or self.vectorY > self.slack) ):
-            incrementY = self.getPulseIncrement(self.vectorY)
-            if (incrementY != 0):
-                self.tiltServo.movePulseIncrement( incrementY )
-
-    def getPulseIncrement(self, px):
-        # Do not map pixel to increment.
-        # Just whether movement required, and what speed.
-        # Joystick off center by small amount = small incremental move.
-        # Joystick off center by large amount = large incremental move.
-
-        pulseIncrement = 0
-
-        if px > 0:
-            pulseIncrement = self.step
-            if px > 25:
-                pulseIncrement = self.step * 2
-                if px > 50:
-                    pulseIncrement = self.step * 10
-
-        if px < 0:
-            pulseIncrement = self.step * -1
-            if px < -25:
-                pulseIncrement = self.step * 2 * -1
-                if px < -50:
-                    pulseIncrement = self.step * 10 * -1
-
-        return pulseIncrement
 
     def setVector(self, m):
         vector = m.split(',')
@@ -149,5 +116,21 @@ class BaseServo:
         self.lastPulseIncrement = pulseIncrement
         command = self.lastPulseWidthSet + pulseIncrement
         return self.setPulseWidth( command )
+
+    def move(self, destination):
+        # Constrain the position
+        if destination < self.minPulseWidth:
+            destination = self.minPulseWidth
+        if destination > self.maxPulseWidth:
+            destination = self.maxPulseWidth
+
+        diff = destination - self.currentPosition
+
+        if (diff != 0):
+            # Jump straight there.
+            self.currentPosition = destination
+            self.movePulseIncrement(diff)
+
+        return diff
 
 
