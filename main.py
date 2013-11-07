@@ -3,8 +3,11 @@ import argparse
 import websocket
 import thread
 import time
+import signal, sys
+from SimpleWebSocketServer import SimpleWebSocketServer
 
 import theapipantilt.drivers as drivers
+from theapipantilt.ws_server import SimpleChat
 
 
 PWM_FREQUENCY = 50    # Hz
@@ -21,8 +24,13 @@ def on_error(ws, error):
 def on_close(ws):
     print "### closed ###"
 
+def close_sig_handler(signal, frame):
+    ws_server.close()
+    sys.exit()
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, close_sig_handler)
+
     parser = argparse.ArgumentParser(description='Pan and Tilt')
     parser.add_argument('--host', default='192.168.0.145')
     parser.add_argument('-d', '--driver', default='rpiodriver')
@@ -51,6 +59,12 @@ if __name__ == "__main__":
     else:
         servoControl.initPanServo( PAN_PWM_PIN, 800, 1500, 2350)
         servoControl.initTiltServo( TILT_PWM_PIN, 900, 1300, 1850)
+
+    # Websocket server
+    ws_server = SimpleWebSocketServer(args.host, args.port, SimpleChat)
+    # In a thread
+    thread.start_new_thread(ws_server.serveforever, ())
+
 
 
     ws = websocket.WebSocketApp('ws://' + str(args.host) + ':' + str(args.port) + '/ws',
