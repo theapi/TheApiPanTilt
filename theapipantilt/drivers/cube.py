@@ -161,7 +161,7 @@ class Simulation:
         for f in self.faces:
             z = (t[f[0]].z + t[f[1]].z + t[f[2]].z + t[f[3]].z) / 4.0
             avg_z.append([i,z])
-            i = i + 1
+            i += 1
 
         # Draw the faces using the Painter's algorithm:
         # Distant faces are drawn before the closer ones.

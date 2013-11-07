@@ -47,10 +47,10 @@ class BaseServoControl:
             self.vectorY = int( vector[1].strip() )
 
             if (self.invertPan):
-                self.vectorX = self.vectorX * -1
+                self.vectorX *= -1
 
             if (self.invertTilt):
-                self.vectorY = self.vectorY * -1
+                self.vectorY *= -1
 
             #print math.degrees(math.atan2(self.vectorX, self.vectorY))
         except ValueError:
