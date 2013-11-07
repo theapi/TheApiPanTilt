@@ -24,12 +24,8 @@ def on_error(ws, error):
 def on_close(ws):
     print "### closed ###"
 
-def close_sig_handler(signal, frame):
-    ws_server.close()
-    sys.exit()
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, close_sig_handler)
 
     parser = argparse.ArgumentParser(description='Pan and Tilt')
     parser.add_argument('--host', default='192.168.0.145')
