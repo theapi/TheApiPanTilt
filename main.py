@@ -35,7 +35,7 @@ if __name__ == "__main__":
                     action="store_true")
     parser.add_argument("-T", "--inverttilt", help="invert tilt",
                     action="store_true")
-    parser.add_argument("-S", "--server", help="Run the websocket server too",
+    parser.add_argument("-S", "--nowsserver", help="Do not run the websocket server too",
                     action="store_true")
 
     args = parser.parse_args()
@@ -59,7 +59,9 @@ if __name__ == "__main__":
         servoControl.initTiltServo( TILT_PWM_PIN, 900, 1300, 1850)
 
     # Websocket server
-    if (args.server):
+    if (args.nowsserver):
+        pass
+    else:
         ws_server = SimpleWebSocketServer(args.host, args.port, SimpleChat)
         # In a thread
         thread.start_new_thread(ws_server.serveforever, ())
