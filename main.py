@@ -3,8 +3,8 @@ import argparse
 import websocket
 import thread
 import time
-import signal, sys
-from SimpleWebSocketServer import SimpleWebSocketServer
+
+from theapipantilt.SimpleWebSocketServer import SimpleWebSocketServer
 
 import theapipantilt.drivers as drivers
 from theapipantilt.ws_server import SimpleChat
