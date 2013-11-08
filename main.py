@@ -28,7 +28,7 @@ def on_close(ws):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Pan and Tilt')
-    parser.add_argument('--host', default='192.168.0.145')
+    parser.add_argument('--host', default='localhost')
     parser.add_argument('-d', '--driver', default='rpiodriver')
     parser.add_argument('-p', '--port', default=8000, type=int)
     parser.add_argument("-P", "--invertpan", help="invert pan",
