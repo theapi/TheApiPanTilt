@@ -56,7 +56,7 @@ if __name__ == "__main__":
         servoControl.initTiltServo( TILT_PWM_PIN, -45, 0, 45)
     else:
         servoControl.initPanServo( PAN_PWM_PIN, 800, 1500, 2350)
-        servoControl.initTiltServo( TILT_PWM_PIN, 900, 1300, 1850)
+        servoControl.initTiltServo( TILT_PWM_PIN, 900, 1300, 1620)
 
     # Websocket server
     if (args.nowsserver):
