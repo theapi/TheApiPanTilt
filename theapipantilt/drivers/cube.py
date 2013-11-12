@@ -182,6 +182,28 @@ class Simulation:
     def run(self):
         self.move()
 
+        """ Main Loop """
+        while 1:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            self.clock.tick(50)
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP]:
+                self.tiltAngle += 1
+                self.move()
+            if keys[pygame.K_DOWN]:
+                self.tiltAngle += -1
+                self.move()
+            if keys[pygame.K_LEFT]:
+                self.panAngle += 1
+                self.move()
+            if keys[pygame.K_RIGHT]:
+                self.move()
+                self.panAngle += -1
 
 
 
